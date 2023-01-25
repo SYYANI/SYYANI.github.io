@@ -1,0 +1,8 @@
+title: XiNGRZ's BLOG
+subtitle: 一些唠叨
+author: XiNGRZ
+language: zh-CN
+
+permalink: :year/:month/:day/:title.html
+
+theme: hacker
