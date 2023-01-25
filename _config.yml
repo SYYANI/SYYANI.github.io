@@ -5,5 +5,5 @@ language: zh-CN
 
 permalink: :year/:month/:day/:title.html
 
-remote_theme: Hacker
+theme: Hacker
 
