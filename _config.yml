@@ -5,4 +5,4 @@ language: zh-CN
 
 permalink: :year/:month/:day/:title.html
 
-theme: Hacker
+theme: hacker
