@@ -35,7 +35,7 @@ jobs:
       - name: Sync posts
         run: node sync.mjs
         env:
-          GH_REPO: xingrz/blog
+          GH_REPO: SYYANI/blog
           GH_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
 
       - name: Hexo build
