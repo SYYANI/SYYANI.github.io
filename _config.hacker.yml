@@ -7,9 +7,9 @@ googleTrackId: G-TNEF16TMV4
 
 giscus: true
 data_repo: syyani/syyani.github.io
-data_repo_id: R_kgDOH8N7xQ
-data_category: Announcements
-data_category_id: DIC_kwDOH8N7xc4CRQCg
+data-repo-id: R_kgDOI1kV-A
+data-category: Announcements
+data-category-id: DIC_kwDOI1kV-M4CTyh9
 data_mapping: og:title
 data_strict: 1
 data_reactions_enabled: 1
