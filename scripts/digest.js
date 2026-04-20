@@ -247,7 +247,6 @@ hexo.extend.generator.register('digest-pages', function digestPages(locals) {
 
   const listHtml = [
     '<div class="digest-module">',
-    '<p>这里汇总展示 digest 内容仓库中维护的摘要内容。</p>',
     items.length === 0 ? '<p>还没有可展示的 digest。</p>' : '',
     ...items.map((item) => {
       const tagsHtml =
