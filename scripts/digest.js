@@ -291,7 +291,7 @@ hexo.extend.generator.register('digest-pages', function digestPages(locals) {
       title: 'Digest',
       path: 'digest/index.html',
       date: digestIndexDate,
-      description: '这里汇总展示 digest 内容仓库中维护的摘要内容。',
+      description: '这里汇总展示Freddie的摘要内容。',
       content: listHtml,
       digestItems: items,
     },
