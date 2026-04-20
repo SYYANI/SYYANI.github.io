@@ -1,4 +1,5 @@
 const fs = require('fs');
+const moment = require('moment');
 const path = require('path');
 
 const DEFAULT_DIGEST_ROOT = path.resolve(__dirname, '..', '..', 'digest', 'content', 'digest');
@@ -108,8 +109,8 @@ function toRoutePath(relativePath) {
 }
 
 function formatDateLabel(date) {
-  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
-  return date.toISOString().slice(0, 10);
+  if (!date || typeof date.format !== 'function') return '';
+  return date.format('YYYY-MM-DD');
 }
 
 hexo.extend.generator.register('digest-pages', function digestPages(locals) {
@@ -140,7 +141,7 @@ hexo.extend.generator.register('digest-pages', function digestPages(locals) {
     if (frontMatter.draft) continue;
 
     const stats = fs.statSync(filePath);
-    const parsedDate = frontMatter.date ? new Date(frontMatter.date) : stats.mtime;
+    const parsedDate = moment(frontMatter.date || stats.mtime);
     const pageTitle = frontMatter.title || path.basename(filePath, '.md');
     const summary = frontMatter.summary || stripMarkdown(body).slice(0, 180);
     const renderedBody = hexo.render.renderSync({
@@ -156,11 +157,25 @@ hexo.extend.generator.register('digest-pages', function digestPages(locals) {
       tags: Array.isArray(frontMatter.tags) ? frontMatter.tags : [],
     });
 
+    const pageData = {
+      title: pageTitle,
+      path: routePath,
+      date: parsedDate,
+      updated: parsedDate,
+      content: renderedBody,
+      excerpt: summary,
+      comments: false,
+      tags: [],
+      categories: [],
+    };
+
     pages.push({
       path: routePath,
       layout: ['post', 'page', 'index'],
       data: {
+        page: pageData,
         title: pageTitle,
+        path: routePath,
         date: parsedDate,
         content: renderedBody,
       },
@@ -171,7 +186,7 @@ hexo.extend.generator.register('digest-pages', function digestPages(locals) {
 
   const listHtml = [
     '<div class="digest-module">',
-    `<p>这里汇总展示 <code>${escapeHtml(DIGEST_ROOT)}</code> 中维护的摘要内容。</p>`,
+    '<p>这里汇总展示 digest 内容仓库中维护的摘要内容。</p>',
     items.length === 0 ? '<p>还没有可展示的 digest。</p>' : '',
     ...items.map((item) => {
       const tagsHtml =
@@ -196,11 +211,26 @@ hexo.extend.generator.register('digest-pages', function digestPages(locals) {
     .filter(Boolean)
     .join('\n');
 
+  const digestIndexDate = items[0] ? items[0].date : moment();
+  const digestIndexPage = {
+    title: 'Digest',
+    path: 'digest/index.html',
+    date: digestIndexDate,
+    updated: digestIndexDate,
+    content: listHtml,
+    comments: false,
+    tags: [],
+    categories: [],
+  };
+
   pages.push({
     path: 'digest/index.html',
     layout: ['page', 'post', 'index'],
     data: {
+      page: digestIndexPage,
       title: 'Digest',
+      path: 'digest/index.html',
+      date: digestIndexDate,
       content: listHtml,
       digestItems: items,
     },
