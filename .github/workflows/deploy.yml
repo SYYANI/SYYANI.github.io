@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ master ]
+  repository_dispatch:
+    types: [digest-updated]
   workflow_dispatch:
 
 permissions:
@@ -17,11 +19,25 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DIGEST_CONTENT_DIR: ${{ github.workspace }}/../digest/content/digest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: true
+
+      - name: Checkout digest content
+        if: ${{ vars.DIGEST_REPOSITORY != '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.DIGEST_REPOSITORY }}
+          path: _external/digest
+          token: ${{ secrets.DIGEST_REPO_TOKEN }}
+
+      - name: Use external digest path
+        if: ${{ vars.DIGEST_REPOSITORY != '' }}
+        run: echo "DIGEST_CONTENT_DIR=${{ github.workspace }}/_external/digest/content/digest" >> "$GITHUB_ENV"
           
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -37,6 +53,9 @@ jobs:
         env:
           GH_REPO: SYYANI/blog
           GH_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+
+      - name: Validate digest source
+        run: test -d "$DIGEST_CONTENT_DIR"
           
       - name: Hexo build
         run: npm run build
