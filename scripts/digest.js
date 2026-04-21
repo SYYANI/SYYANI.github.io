@@ -155,6 +155,28 @@ function toRoutePath(relativePath, slug) {
   return `digest/${normalized}`;
 }
 
+function makeUniqueRoutePath(routePath, relativePath, seenRoutePaths) {
+  if (!seenRoutePaths.has(routePath)) return routePath;
+
+  const normalized = relativePath.split(path.sep).join('/');
+  const basename = path.basename(normalized, path.extname(normalized));
+  const dir = path.posix.dirname(routePath);
+  let index = 1;
+
+  while (true) {
+    const candidate =
+      index === 1
+        ? `${dir}-${basename}/index.html`
+        : `${dir}-${basename}-${index}/index.html`;
+
+    if (!seenRoutePaths.has(candidate)) {
+      return candidate;
+    }
+
+    index += 1;
+  }
+}
+
 function formatDateLabel(date) {
   if (!date || typeof date.format !== 'function') return '';
   return date.format('YYYY-MM-DD');
@@ -191,10 +213,10 @@ hexo.extend.generator.register('digest-pages', function digestPages(locals) {
     if (frontMatter.draft) continue;
 
     const relativePath = path.relative(DIGEST_ROOT, filePath);
-    const routePath = toRoutePath(relativePath, frontMatter.slug);
-    if (seenRoutePaths.has(routePath)) {
-      hexo.log.warn(`[digest] duplicate route skipped: ${routePath} from ${filePath}`);
-      continue;
+    const baseRoutePath = toRoutePath(relativePath, frontMatter.slug);
+    const routePath = makeUniqueRoutePath(baseRoutePath, relativePath, seenRoutePaths);
+    if (routePath !== baseRoutePath) {
+      hexo.log.warn(`[digest] duplicate route remapped: ${baseRoutePath} -> ${routePath} for ${filePath}`);
     }
     seenRoutePaths.add(routePath);
 
