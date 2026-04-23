@@ -1,7 +1,10 @@
 title: SYYANI's BLOG
 subtitle: 碎碎念
+description: 碎碎念
 author: SYYANI
 language: zh-CN
+url: https://syyani.github.io
+root: /
 
 permalink: :year/:month/:day/:title.html
 

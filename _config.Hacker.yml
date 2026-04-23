@@ -1,7 +1,7 @@
 menu:
-  Home: /
-  Archives: /archives
+  All Posts: /archives/
   Digest: /digest/
+  Tags: /tags/
   About: /about.html
 
 googleTrackId: G-8MHZNDKC11
