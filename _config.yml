@@ -8,4 +8,9 @@ root: /
 
 permalink: :year/:month/:day/:title.html
 
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+
 theme: Hacker
